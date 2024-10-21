@@ -77,6 +77,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       title: Text(
+                        overflow: TextOverflow.ellipsis,
                         allNotes[index][DBHelper.COLUMN_NOTE_TITLE],
                         style: const TextStyle(
                           color: Colors.black,
@@ -84,10 +85,13 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       subtitle: Text(
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         allNotes[index][DBHelper.COLUMN_NOTE_DESC],
                         style: const TextStyle(
-                          color: Colors.black,
+                          color: Colors.blueGrey,
                           fontSize: 16.0,
+                          letterSpacing: 2.0,
                         ),
                       ),
                       trailing: SizedBox(
@@ -154,8 +158,6 @@ class _HomePageState extends State<HomePage> {
             isScrollControlled: true,
             context: context,
             builder: (context) {
-              titleController.clear();
-              descController.clear();
               return getBottomSheet();
             },
           );
@@ -219,6 +221,8 @@ class _HomePageState extends State<HomePage> {
                       return "Please Enter A Title!";
                     } else if (value.length <= 3) {
                       return "Title Must Be At Least 4 Characters Long.";
+                    } else if (value.length > 15) {
+                      return "Title Must Be 15 Characters or Less";
                     }
                     return null;
                   },
@@ -280,6 +284,7 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () async {
                         // Validate the form before submission
                         if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
                           var title = titleController.text;
                           var desc = descController.text;
 
@@ -293,8 +298,10 @@ class _HomePageState extends State<HomePage> {
                             getNotes();
                           }
 
-                          titleController.clear();
-                          descController.clear();
+                          setState(() {
+                            titleController.clear();
+                            descController.clear();
+                          });
                           Navigator.pop(context);
                         }
                       },
@@ -324,6 +331,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       onPressed: () async {
+                        titleController.clear();
+                        descController.clear();
                         Navigator.pop(context);
                       },
                       child: const Text(
