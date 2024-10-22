@@ -95,7 +95,6 @@ class _HomePageState extends State<HomePage> {
                             style: const TextStyle(
                               color: Colors.blueGrey,
                               fontSize: 16.0,
-                              letterSpacing: 2.0,
                             ),
                           ),
                           trailing: SizedBox(
@@ -333,7 +332,7 @@ class _HomePageState extends State<HomePage> {
                             getNotes();
                           }
                           Navigator.pop(context);
-                          await Future.delayed(const Duration(seconds: 2));
+                          await Future.delayed(const Duration(seconds: 1));
                           setState(() {
                             titleController.clear();
                             descController.clear();
