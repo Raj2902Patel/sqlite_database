@@ -99,51 +99,59 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           trailing: SizedBox(
-                            width: 80,
+                            width: 90,
                             child: Row(
                               children: [
-                                InkWell(
-                                  onTap: () {
-                                    showModalBottomSheet(
-                                      isScrollControlled: true,
-                                      context: context,
-                                      sheetAnimationStyle: AnimationStyle(
-                                        duration: const Duration(seconds: 2),
-                                        reverseDuration:
-                                            const Duration(seconds: 1),
-                                      ),
-                                      builder: (context) {
-                                        titleController.text = allNotes[index]
-                                            [DBHelper.COLUMN_NOTE_TITLE];
-                                        descController.text = allNotes[index]
-                                            [DBHelper.COLUMN_NOTE_DESC];
-                                        return getBottomSheet(
-                                            isUpdate: true,
-                                            sno: allNotes[index]
-                                                [DBHelper.COLUMN_NOTE_SNO]);
-                                      },
-                                    );
-                                  },
-                                  child: const Icon(
-                                    Icons.edit_note_rounded,
-                                    color: Colors.green,
+                                CircleAvatar(
+                                  backgroundColor:
+                                      Colors.greenAccent.withOpacity(0.5),
+                                  child: InkWell(
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        context: context,
+                                        sheetAnimationStyle: AnimationStyle(
+                                          duration: const Duration(seconds: 2),
+                                          reverseDuration:
+                                              const Duration(seconds: 1),
+                                        ),
+                                        builder: (context) {
+                                          titleController.text = allNotes[index]
+                                              [DBHelper.COLUMN_NOTE_TITLE];
+                                          descController.text = allNotes[index]
+                                              [DBHelper.COLUMN_NOTE_DESC];
+                                          return getBottomSheet(
+                                              isUpdate: true,
+                                              sno: allNotes[index]
+                                                  [DBHelper.COLUMN_NOTE_SNO]);
+                                        },
+                                      );
+                                    },
+                                    child: const Icon(
+                                      Icons.edit_note_rounded,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(
-                                  width: 15,
+                                  width: 10,
                                 ),
-                                InkWell(
-                                  onTap: () async {
-                                    bool check = await dbRef!.deleteNote(
-                                        sno: allNotes[index]
-                                            [DBHelper.COLUMN_NOTE_SNO]);
-                                    if (check) {
-                                      getNotes();
-                                    } else {}
-                                  },
-                                  child: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
+                                CircleAvatar(
+                                  backgroundColor:
+                                      Colors.redAccent.withOpacity(0.5),
+                                  child: InkWell(
+                                    onTap: () async {
+                                      bool check = await dbRef!.deleteNote(
+                                          sno: allNotes[index]
+                                              [DBHelper.COLUMN_NOTE_SNO]);
+                                      if (check) {
+                                        getNotes();
+                                      } else {}
+                                    },
+                                    child: const Icon(
+                                      Icons.delete,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
                               ],
