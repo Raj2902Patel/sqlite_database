@@ -65,79 +65,90 @@ class _HomePageState extends State<HomePage> {
               ? ListView.builder(
                   itemCount: allNotes.length,
                   itemBuilder: (_, index) {
-                    return ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.grey.withOpacity(0.5),
-                        child: Text(
-                          '${index + 1}',
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 20.0,
+                    return Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Card(
+                        color: Colors.white54,
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.blueGrey.withOpacity(0.5),
+                            child: Text(
+                              '${index + 1}',
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.0,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      title: Text(
-                        overflow: TextOverflow.ellipsis,
-                        allNotes[index][DBHelper.COLUMN_NOTE_TITLE],
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                      subtitle: Text(
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        allNotes[index][DBHelper.COLUMN_NOTE_DESC],
-                        style: const TextStyle(
-                          color: Colors.blueGrey,
-                          fontSize: 16.0,
-                          letterSpacing: 2.0,
-                        ),
-                      ),
-                      trailing: SizedBox(
-                        width: 80,
-                        child: Row(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                showModalBottomSheet(
-                                  isScrollControlled: true,
-                                  context: context,
-                                  builder: (context) {
-                                    titleController.text = allNotes[index]
-                                        [DBHelper.COLUMN_NOTE_TITLE];
-                                    descController.text = allNotes[index]
-                                        [DBHelper.COLUMN_NOTE_DESC];
-                                    return getBottomSheet(
-                                        isUpdate: true,
+                          title: Text(
+                            overflow: TextOverflow.ellipsis,
+                            allNotes[index][DBHelper.COLUMN_NOTE_TITLE],
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                          subtitle: Text(
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            allNotes[index][DBHelper.COLUMN_NOTE_DESC],
+                            style: const TextStyle(
+                              color: Colors.blueGrey,
+                              fontSize: 16.0,
+                              letterSpacing: 2.0,
+                            ),
+                          ),
+                          trailing: SizedBox(
+                            width: 80,
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      context: context,
+                                      sheetAnimationStyle: AnimationStyle(
+                                        duration: const Duration(seconds: 2),
+                                        reverseDuration:
+                                            const Duration(seconds: 1),
+                                      ),
+                                      builder: (context) {
+                                        titleController.text = allNotes[index]
+                                            [DBHelper.COLUMN_NOTE_TITLE];
+                                        descController.text = allNotes[index]
+                                            [DBHelper.COLUMN_NOTE_DESC];
+                                        return getBottomSheet(
+                                            isUpdate: true,
+                                            sno: allNotes[index]
+                                                [DBHelper.COLUMN_NOTE_SNO]);
+                                      },
+                                    );
+                                  },
+                                  child: const Icon(
+                                    Icons.edit_note_rounded,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    bool check = await dbRef!.deleteNote(
                                         sno: allNotes[index]
                                             [DBHelper.COLUMN_NOTE_SNO]);
+                                    if (check) {
+                                      getNotes();
+                                    } else {}
                                   },
-                                );
-                              },
-                              child: const Icon(
-                                Icons.edit_note_rounded,
-                                color: Colors.green,
-                              ),
+                                  child: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                bool check = await dbRef!.deleteNote(
-                                    sno: allNotes[index]
-                                        [DBHelper.COLUMN_NOTE_SNO]);
-                                if (check) {
-                                  getNotes();
-                                } else {}
-                              },
-                              child: const Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     );
@@ -152,17 +163,33 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          showModalBottomSheet(
-            isScrollControlled: true,
-            context: context,
-            builder: (context) {
-              return getBottomSheet();
-            },
-          );
-        },
-        child: const Icon(Icons.add),
+      floatingActionButton: Theme(
+        data: Theme.of(context).copyWith(
+          splashFactory: NoSplash.splashFactory, // Disable the ripple effect
+          highlightColor: Colors.transparent, // Disable highlight color
+        ),
+        child: FloatingActionButton(
+          splashColor: Colors.transparent,
+          highlightElevation: 0,
+          backgroundColor: Colors.black,
+          onPressed: () async {
+            showModalBottomSheet(
+              isScrollControlled: true,
+              context: context,
+              sheetAnimationStyle: AnimationStyle(
+                duration: const Duration(seconds: 2),
+                reverseDuration: const Duration(seconds: 1),
+              ),
+              builder: (context) {
+                return getBottomSheet();
+              },
+            );
+          },
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }
@@ -297,12 +324,12 @@ class _HomePageState extends State<HomePage> {
                           if (check) {
                             getNotes();
                           }
-
+                          Navigator.pop(context);
+                          await Future.delayed(const Duration(seconds: 2));
                           setState(() {
                             titleController.clear();
                             descController.clear();
                           });
-                          Navigator.pop(context);
                         }
                       },
                       child: Text(
